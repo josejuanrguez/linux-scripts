@@ -1,0 +1,23 @@
+#!/bin/bash
+if ! [ -x "$(command -v awk)" ]; then
+  echo 'Error: awk is not installed.'
+  exit 1
+fi
+set -- $(getopt -q usah "$@")
+while [ -n "$1" ]
+do
+        case "$1" in
+        -u) cat /etc/passwd | awk -F: '{if ($3 >= 1000 && $3 < 60000) print $1}'; break;;
+        -s) cat /etc/passwd | awk -F: '{if ($3 < 1000 || $3 > 60000) print $1}'; break;;
+        -a) cat /etc/passwd | awk -F: '{print $1}'; break;;
+        -h) echo "List all users in the system."
+            echo "Usage: users -u -s -a -h"
+            echo ""
+            echo " -u List normal users."
+            echo " -s List system users."
+            echo " -a List all users in the system."
+            echo ""; break;;
+        *) echo "Invalid option. Use users -h to get help.";;
+        esac
+        shift
+done
